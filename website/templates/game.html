@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='game.css') }}" crossorigin="anonymous"></link>
+
+  <title>Dead End : A Zombie Tale</title>
+  <link rel="icon" 
+  type="image/png" 
+  href="{{url_for('static',filename='logo.png')}}">
+
+
+
+</head>
+<body>
+  <a href="{{ url_for('views.shop') }}" class="btn btn-primary shop-button">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg>
+  </a>
+  <img src="{{ url_for('static', filename=location+'.png') }}" class="bg_image" />
+  <div class="container col-md-12 d-flex flex-column justify-content-between">
+    
+      
+        <div class="scene_question border border-secondary list-group-item p-3 m-3 rounded-4">
+          <h1>{{ text }}</h1>
+          <h2>{{ question }}</h2>
+        </div>
+
+        <div class="choices col-md-12">
+          <form action="/update_level" method="POST" class="col-md-12 d-flex justify-content-around">
+            {% for i, j in enumerate(choices.split('$'), start=1) %}
+            <button type="submit" name="chosen_level" value={{ i }} 
+            class="choice border border-secondary list-group-item p-2 m-2 rounded-3">{{ j }}</button>
+            {% endfor %}
+          </form>
+        </div>
+
+        {% if item %}
+          {% for i in item.split('$') %}
+          <div id="item-menu" class="item_menu">
+            <h4 class="item_question border border-secondary list-group-item p-2 m-2 rounded">
+              {{ i }} found! Do you want to pick it up?
+            </h4>
+            <form action="/add_item" method="POST" class="d-flex">
+              <button type="submit" name="add" value={{ item }} 
+              class="item_button border border-secondary list-group-item p-2 m-2 rounded yes">Yes</button>
+              <button type = "submit" class="item_button border border-secondary list-group-item p-2 m-2 rounded no"  
+              onclick="return handleItemMenu(event)">No</button>
+            </form>
+          </div>
+
+          {% endfor %}
+        {% endif %}
+  
+  
+
+        {% if user.level != '3.0.0.0' %}
+          {% if inventory %}
+            <div class="inventory border border-secondary list-group-item p-2 m-2 rounded-4">
+            {% for item in inventory[0].split('$') %}
+              {% if item %}
+                <img src="{{ url_for('static', filename=item+'.png') }}" 
+                class="item {% if use %}{% if item in use.split('$') %}unlocked{% else %}disabled{% endif %}{% endif %}" 
+                {% if use %}{% if item in use.split('$') %}onclick="useItem('{{ item }}')"{% endif %}{% endif %}>
+              {% endif %}
+            {% endfor %}
+            </div>
+          {% endif %}
+        {% endif %}
+  
+  
+        {% if user.level == '3.0.0.0' %}
+          <a href="/subscribe" class="subscribe-link">Subscribe</a>
+        {% endif %}
+  
+  
+
+        {% if choices == 'RESTART' %}
+          <div class="death-animation d-flex justify-content-center">
+            <img src="{{ url_for('static', filename='died.jpg') }}"/>
+          </div>
+        {% endif %}
+
+        <div class="col-md-12 d-flex justify-content-center">
+          <div class="border border-secondary list-group-item p-1 rounded return d-flex flex-row align-center">
+           <a href="{{ url_for('views.home') }}">Return Home</a></p>
+         </div>
+        </div>
+      
+    
+  </div>
+  <script>
+    function useItem(item) {
+      fetch('/use_item', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ item: item }),
+      })
+      .then(response => {
+        if (response.ok) {
+          // Optionally, handle successful response
+          showMessage('Item used successfully');
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+          // Reload the game or update the UI as needed
+          
+        } else {
+          // Optionally, handle error response
+          showMessage('Error using item');
+        }
+        
+      })
+      .catch(error => {
+        showMessage('Error using item:', error);
+      });
+    }
+    function showMessage(message) {
+      // Create a new div element for the message
+      const messageBox = document.createElement('div');
+      messageBox.setAttribute('id', 'message-box');
+      messageBox.textContent = message;
+    
+      // Append the message box to the body
+      document.body.appendChild(messageBox);
+    
+      // Remove the message box after a delay
+      setTimeout(() => {
+        messageBox.remove();
+      }, 10000);
+      
+    }
+
+    function handleItemMenu(event) {
+      event.preventDefault();
+      const itemMenu = document.getElementById("item-menu");
+      itemMenu.style.display = "none";   
+      return false;
+    }
+    
+    
+  </script>
+
+  
+</body>
+</html>

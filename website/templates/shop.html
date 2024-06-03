@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dead End : A Zombie Tale</title>
+  <link rel="icon" 
+  type="image/png" 
+  href="{{url_for('static',filename='logo.png')}}">
+  
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 2rem;
+      background-image: url("static/market.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      color: #ffffff;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #800000;
+      text-shadow: 2px 2px 4px #000000;
+      font-size: 5rem;
+      margin-top:1rem;
+      margin-bottom: 2rem;
+      font-family: 'Chiller';
+    }
+    
+    .shop-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .shop-item {
+      margin: 1rem;
+      border: 2px solid #800000;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 250px;
+      text-align: center;
+      background-color: rgba(44, 44, 44, 0.8);
+      box-shadow: 2px 2px 4px #000000;
+    }
+    
+    .shop-item p {
+      margin-bottom: 0.5rem;
+      color: 'white';
+    }
+    
+    button {
+      background-color: #6b1000;
+      border: none;
+      color: #ffffff;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    
+    button:hover {
+      background-color: #b30000;
+    }
+    
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #ff3333;
+    }
+
+    a {
+      color: #ff3333;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #b30000;
+    }
+
+    .item{
+      width:100px;
+      height:auto;
+  }
+  .wel {
+    font-size: 2rem;
+    font-family: 'Chiller';
+  }
+  
+  .ret {
+    font-size: 1.7rem; 
+    font-family: 'Chiller';
+  }
+
+  /* CSS for flash messages with slide-in animation from right to left */
+  .alert {
+    position: fixed;
+    top: 20px;
+    right: -320px; /* Start off-screen to the right */
+    z-index: 10000;
+    width: 300px;
+    background-color: transparent;
+    animation: slideIn 0.5s forwards; /* Apply slide-in animation */
+  }
+  
+  @keyframes slideIn {
+    from {
+      right: -320px; /* Start off-screen to the right */
+      opacity: 0; /* Start transparent */
+    }
+    to {
+      right: 20px; /* End position */
+      opacity: 1; /* Fully visible */
+    }
+  }
+  
+
+  </style>
+</head>
+<body>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+   
+  <h1>Dark Emporium</h1>
+  <p class="wel">Welcome to the sinister shop! Spend your cursed coins on dreadful items.</p>
+  <div class="shop-items">
+    {% for item in shop_items %}
+      <div class="shop-item">
+        <h2>{{ item.name }}</h2>
+        
+        <img src="{{ url_for('static', filename=item.name+'.png') }}" class="item">
+        
+        <p>{{ item.description }}</p>
+        <p>Cost: {{ item.cost }} coins</p>
+        <form action="{{ url_for('views.buy_item', item_id=item.id) }}" method="POST">
+          <button type="submit">Invoke Fear</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+  {% if item_added %}
+    <p class="message">{{ item_added }} has been summoned into your inventory!</p>
+  {% endif %}
+  
+  <p class="ret"><a href="{{ url_for('views.game') }}">Return to the Abyss</a></p>
+  <p class="ret"><a href="/">Return to Home</a></p>
+
+
+</body>
+</html>

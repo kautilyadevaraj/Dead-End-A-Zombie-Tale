@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dead End : A Zombie Tale</title>
+  <link rel="icon" 
+  type="image/png" 
+  href="{{url_for('static',filename='logo.png')}}">
+  
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Font Styles */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+    
+    .gaming-icon {
+      font-size: 24px;
+      margin-right: 10px;
+      color: #fff;
+    }
+
+    .btn-gaming:hover {
+      background-color: #8B0000;
+      color: #570000;
+      border-color: #8B0000;
+    }
+
+    .gaming-header {
+      font-family: 'Roboto Condensed', sans-serif;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+    }
+
+    .center-form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #bg-video {
+      position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        object-fit: fill;
+    }
+
+    .content-container {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+      color: #450000;
+    }
+
+    .form-box {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding-left: 20px;
+      padding-right: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-group label {
+      color: white;
+    }
+
+    .signup-text {
+      font-family: 'Roboto Condensed', sans-serif;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .gaming-logo {
+      width: 48px;
+      height: auto;
+      margin-right: 10px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      padding: 5px;
+    }
+
+    body {
+      background-color: #000000;
+      color: white;
+    }
+
+    .form-control {
+      background-color: #333;
+      color: white;
+    }
+
+    .login-text {
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .login-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .login-container a{
+      text-decoration:none;
+    }
+
+    .card-body{
+      padding-bottom:0px;
+      padding-top:10px;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Background Video -->
+  <video id="bg-video" autoplay muted loop>
+    <source src="{{url_for('static',filename='zombie.webm')}}" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %} {% if category ==
+    'error' %}
+    <div class="alert alert-danger alter-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alter-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+  <!-- Content -->
+  <div class="container-fluid content-container center-form">
+    <div class="col-md-6">
+      <div class="card form-box">
+        <div class="card-header gaming-header">
+          <h4 class="mb-0">
+            <img src="{{url_for('static',filename='logo.png')}}" alt="Gaming Logo" class="gaming-logo">
+            <span class="signup-text">Sign Up</span>
+          </h4>
+        </div>
+        <div class="card-body">
+          <form id="loginForm" method="POST">
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                placeholder="Enter email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                name="firstName"
+                placeholder="Enter first name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+              />
+            </div>
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-gaming">Sign Up</button>
+            <div class="login-container">
+              <a href="/login"><p class="login-text">Already have an account? </p></a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dead End : A Zombie Tale</title>
+    <link rel="icon" 
+    type="image/png" 
+    href="{{url_for('static',filename='logo.png')}}">
+    
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Roboto Condensed', sans-serif;
+      }
+
+      body {
+        background-image: url('static/statsimage.png');
+        background-size: cover;
+        max-height:100vh;
+      }
+      .navbar {
+        background-color: #333;
+      }
+      .navbar-nav .nav-item .nav-link {
+        color: #fff;
+      }
+      .list-group-item {
+        background-color: rgba(46, 46, 46, 0.6); 
+        border-color: transparent; 
+        
+      }
+
+      .details{
+        background-color: rgba(46, 46, 46, 0.6);
+        display:flex;
+        justify-content:space-around;
+      }
+
+      .user_email{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-around;
+      }
+
+      .statistics{
+        display:flex;
+        flex-direction:column;
+      }
+
+      .stats{
+        display:flex;
+        justify-content:space-around;
+      }
+
+      .lvl_death{
+        display:flex;
+        flex-direction:column;
+        justify-content:space-around;
+      }
+    </style>
+    <title>Dead End : A Zombie Tale</title>
+  </head>
+
+  <body>
+    <!-- Audio -->
+    <audio autoplay loop>
+      <source src="{{url_for('static',filename='statsaudio.mp3')}}" type="audio/mp3" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbar"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" id="home" href="/">Home</a>
+          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+          <a class="nav-item nav-link" id="Stats" href="/stats">Stats</a>
+          <a class="nav-item nav-link" id="Shop" href="/shop">Shop</a>
+          <a href="/subscribe" class="nav-item nav-link" id="subscribe">Subscribe</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-4 order-md-2 mb-4 pt-2">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-white">Leaderboard</span>
+          </h4>
+          <ul class="list-group mb-3">
+            {% for player in leaderboard %}
+            <li class="border border-secondary list-group-item d-flex justify-content-between ">
+              <div class="{% if player.username == user.username %}text-success{% else %}text-white{% endif %}">
+                <h6 class="my-0">{{player.username}}</h6>
+                <small class="{% if player.username == user.username %}text-success {% else %}text-muted{% endif %}">Deaths - {{player.deaths}}</small><br>
+                <small class="{% if player.username == user.username %}text-success {% else %}text-muted{% endif %}">Levels Cleared - {{player.levels_cleared}}</small>
+              </div>
+              <span class="{% if player.username == user.username %}text-success {% else %}text-muted{% endif %}">{{player.coins}}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="col-md-8 order-md-1">
+          <div class="border border-secondary list-group-item p-3 m-3 rounded details">
+            <div class="img_name">
+            <img class="rounded-circle" src="{{url_for('static',filename='profile.jpeg')}}" alt="Generic placeholder image" >
+            <h2 class="pl-4 ml-3 text-white">{{user.first_name}}</h2>
+            </div>
+            <div class="user_email">
+              <div>
+                <h3 class="text-white">Username</h3>
+                <h5 class="text-secondary">{{user.username}}</h5>
+              </div>
+              <div>
+                <h3 class="text-white">Email Address</h3>
+                <h5 class="text-muted">{{user.email}}</h5>
+              </div>
+            </div>
+            
+          </div>
+
+          <div class="border border-secondary list-group-item p-3 m-3 rounded statistics">
+            <h3 class="text-white text-center">Statistics</h3>
+            <div class="stats">
+              <div class="lvl_death">
+                <div>
+                <h5 class="text-white">Levels Cleared</h5>
+                <h6 class="text-muted">{{levels_cleared}}</h6>
+                </div>
+                <div>
+                <h5 class="text-white">Deaths</h5>
+                <h6 class="text-muted">{{deaths}}</h6>
+                </div>
+              </div>
+              <div class="coins">
+                <h5 class="text-white">Coins Earned</h5>
+                <h6 class="text-muted">{{coins}}</h6>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/vendor/holder.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dead End : A Zombie Tale</title>
+    <link rel="icon" 
+    type="image/png" 
+    href="{{url_for('static',filename='logo.png')}}">
+    
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap');
+      
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    body{
+      height:100vh;
+      width:100vw;
+      max-height:100vh;
+    }
+  
+      #bg-video {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        object-fit: fill;
+      }
+
+      .content{
+        height:80vh;
+        display: flex;
+        flex-direction:column;
+        justify-content: space-around;
+      }
+  
+      .container {
+        text-align: center;
+        background-color: transparent;
+        backdrop-filter:blur(3px);
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction:column;
+        justify-content: space-around;
+        align-items: center;
+      }
+
+      .level-container{
+        display:flex;
+        flex-wrap:wrap;
+      }
+  
+      h1 {
+        font-size: 48px;
+        margin-bottom: 30px;
+        color:white;
+      }
+  
+      .level-button {
+        margin: 10px;
+        width: 150px;
+        height: 80px;
+        font-size: 20px;
+        position: relative;
+        overflow: hidden;
+        border-radius:10%;
+        display:flex; 
+        flex-direction:column;
+        justify-content:space-around;
+        align-items:center;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+      }
+
+      .level-in{
+        display:flex; 
+        flex-direction:column;
+        justify-content:space-between;
+        align-items:center;
+      }
+  
+      .level-button:hover {
+        background-color: red;
+        color: white;
+        animation: tremble 0.2s infinite;
+      }
+  
+      .locked {
+        background-color: gray;
+        color: lightgray;
+        cursor: not-allowed;
+        position: relative;
+        overflow: hidden;
+      }
+  
+      .locked:hover {
+        background-color: gray;
+        color: lightgray;
+        animation: none;
+      }
+  
+      .lock-icon {
+        
+        width: 20px;
+        height: 20px;
+      }
+  
+      @keyframes tremble {
+        0% { transform: translate(1px, 1px) rotate(0deg); }
+        10% { transform: translate(-1px, -2px) rotate(-1deg); }
+        20% { transform: translate(-3px, 0px) rotate(1deg); }
+        30% { transform: translate(3px, 2px) rotate(0deg); }
+        40% { transform: translate(1px, -1px) rotate(1deg); }
+        50% { transform: translate(-1px, 2px) rotate(-1deg); }
+        60% { transform: translate(-3px, 1px) rotate(0deg); }
+        70% { transform: translate(3px, 1px) rotate(-1deg); }
+        80% { transform: translate(-1px, -1px) rotate(1deg); }
+        90% { transform: translate(1px, 2px) rotate(0deg); }
+        100% { transform: translate(1px, -2px) rotate(-1deg); }
+      }
+    </style>
+
+    <title>{% block title %}Home{% endblock %}</title>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbar"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav">
+          {% if user.is_authenticated %}
+          <a class="nav-item nav-link" id="home" href="/">Home</a>
+          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+          <a class="nav-item nav-link" id="Stats" href="/stats">Stats</a>
+          <a class="nav-item nav-link" id="Shop" href="/shop">Shop</a>
+          <a href="/subscribe" class="nav-item nav-link" id="subscribe">Subscribe</a>
+          {% else %}
+          <a class="nav-item nav-link" id="login" href="/login">Login</a>
+          <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %} {% if category != 'error' %}
+    
+    <div class="alert alert-success alter-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+    <video id="bg-video" autoplay muted loop>
+      <source src="{{url_for('static', filename = 'level_video.mp4')}}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <audio autoplay loop>
+      <source src="{{url_for('static', filename = 'level_audio.mp3')}}" type="audio/mpeg">
+  
+      Your browser does not support the audio element.
+    </audio>
+    
+    <div class="content">
+    <div class="container">
+
+
+    <h1>Select your doom!</h1>
+    <div class="level-container">
+        {% for i in range(1,11) %}
+        <a href="{% if i<= int(level[0]) %}{{ url_for('views.game', level=str(i)+'.1.0.0') }}{% endif %}" 
+        class="level-button {% if i<= int(level[0]) %}unlocked{% else %}locked{% endif %}">
+          <div class="level-in">  
+                <div><h2>Level {{ i }}</h2></div>
+                {% if i> int(level[0]) %} 
+                <svg class="lock-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/>
+                </svg>
+                {% endif %}
+                
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+  </div>
+</div>
+<script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+</body>
+</html>
